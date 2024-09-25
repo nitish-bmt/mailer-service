@@ -15,6 +15,12 @@ export class Verification{
 
     @Column({
         nullable: false,
+        unique: true,
+    })
+    email: string;
+
+    @Column({
+        nullable: false,
     })
     token: string;
 

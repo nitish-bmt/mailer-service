@@ -1,16 +1,11 @@
 import { Optional } from "@nestjs/common";
 
 export class TokenGenerationDto{
-
     userId: string;
     email: string;
+}
 
-    @Optional()
+export class CreateVerificationDto extends TokenGenerationDto{
     token: string;
-
-    @Optional()
-    generatedAt: Date;
-
-    @Optional()
-    expiry: Date; 
+    generatedAt: Date;            
 }

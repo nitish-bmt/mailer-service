@@ -5,31 +5,27 @@ import { VerificationRepository } from "./repository/verification.repository";
 import { Verification } from "./entity/verification.entity";
 import { MailerService } from "@nestjs-modules/mailer";
 import { VerificationErrorMessages } from "../utils/constants/errors.constant";
-import { EmailService } from "../email/email.service";
+import { NotificationService } from "../notification/notification.service";
 
 @Injectable()
 export class VerificationService{
 
   constructor(
     private readonly verificationRepository: VerificationRepository,
-    private readonly emailService: EmailService
+    private readonly notificationService: NotificationService
   ){}
 
-  async sendVerificationEmail(body: RequestPayload){
-
-    let newUserVerification: TokenGenerationDto;
-    newUserVerification.userId = body.userId;
-    newUserVerification.email = body.email;
+  async sendVerificationEmail(tokenGenerationDetails: RequestPayload){
 
     let verification: Verification;
     try{
-      verification = await this.verificationRepository.generateVerificationToken(newUserVerification);
+      verification = await this.verificationRepository.generateVerificationToken(tokenGenerationDetails);
     }
     catch(error){
       throw error;
     }
     try{
-      await this.emailService.sendEmail(body.email, verification.token);
+      await this.notificationService.sendEmail(tokenGenerationDetails.email, verification.token);
     }
     catch(error){
       throw error;
@@ -38,9 +34,9 @@ export class VerificationService{
   }
 
   async verifyEmail(token: string): Promise<string>{
-    let userId: string;
+
     try{
-      userId = await this.verificationRepository.verifyToken(token);
+      return await this.verificationRepository.verifyToken(token);
     }
     catch(error){
       if (error instanceof UnauthorizedException)
@@ -49,6 +45,5 @@ export class VerificationService{
       throw new InternalServerErrorException(VerificationErrorMessages.ERROR)
     }
 
-    return userId;
   }
 }

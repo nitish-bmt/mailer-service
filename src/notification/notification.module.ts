@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailerModule, MailerService } from '@nestjs-modules/mailer';
-import { EmailController } from './email.controller';
-import { EmailService } from './email.service';
+import { NotificationService } from './notification.service';
+import { NotificationController } from './notification.controller';
 
 @Module({
   imports: [
@@ -22,7 +22,8 @@ import { EmailService } from './email.service';
       inject: [ConfigService],
     }),   
   ],
-  controllers: [EmailController],
-  providers: [EmailService, MailerService],
+  controllers: [],
+  providers: [NotificationService],
+  exports: [NotificationService]
 })
-export class EmailModule {}
+export class NotificationModule {}

@@ -1,6 +1,7 @@
 import {Body, Controller, Get, Inject, Param, Post} from "@nestjs/common";
 import { VerificationService } from "./verification.service";
-import { RequestPayload } from "../utils/types";
+import { RequestPayload, TokenParamPayload } from "../utils/types";
+import { TokenGenerationDto } from "./dto/verification.dto";
 
 @Controller('verify')
 export class VerificationController{
@@ -12,12 +13,18 @@ export class VerificationController{
 
   @Post('email')
   async sendVerificationEmail(@Body() body: RequestPayload){
-    this.verificationService.sendVerificationEmail(body);
+    try{
+      return await this.verificationService.sendVerificationEmail({userId: body.userId, email: body.email} as TokenGenerationDto);
+    }
+    catch(error){
+      throw error;
+    }
   }
 
-  @Post(':token')
-  async verifyEmail(@Param() token: string){
-    return this.verificationService.verifyEmail(token);
+  @Get('/:token')
+  async verifyEmail(@Param() params: TokenParamPayload){
+    console.log(params.token, "Controller token")
+    return await this.verificationService.verifyEmail(params.token);
   }
 
 }

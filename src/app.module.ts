@@ -10,13 +10,11 @@ import { Verification } from './verification/entity/verification.entity';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { VerificationController } from './verification/verification.controller';
 import { VerificationService } from './verification/verification.service';
-import { EmailModule } from './email/email.module';
-import { EmailService } from './email/email.service';
-import { EmailController } from './email/email.controller';
+import { VerificationModule } from './verification/verification.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),  // Ensure the config module is used to load .env variables
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
@@ -31,13 +29,14 @@ import { EmailController } from './email/email.controller';
       }),
       inject: [ConfigService],
     }),  
-    EmailModule,
+    NotificationModule,
     HealthcheckModule,
+    VerificationModule,
     ConfigModule.forRoot({
       isGlobal: true,
     })
   ],
-  controllers: [AppController, HealthcheckController, VerificationController, EmailController],
-  providers: [AppService, HealthcheckService, VerificationService, EmailService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
